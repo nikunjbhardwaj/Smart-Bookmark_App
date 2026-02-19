@@ -14,5 +14,6 @@ export async function GET(request: Request) {
     await supabase.auth.exchangeCodeForSession(code);
   }
 
-  return NextResponse.redirect("http://localhost:3000/dashboard");
+  const origin = new URL(request.url).origin;
+  return NextResponse.redirect(`${origin}/dashboard`);
 }
