@@ -1,65 +1,74 @@
-import Image from "next/image";
+"use client";
+
+import { supabase } from "@/lib/supabaseClient";
+import { useState } from "react";
+
 
 export default function Home() {
+  const [loading, setLoading] = useState(false);
+  const handleLogin = async () => {
+    setLoading(true);
+
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: "http://localhost:3000/auth/callback",
+      },
+    });
+  };
+
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-6">
+
+      <div className="bg-white p-10 rounded-xl shadow-md w-full max-w-md text-center">
+
+        {/* Logo / Title */}
+        <h1 className="text-2xl font-semibold text-gray-900 mb-2">
+          Smart Bookmark App
+        </h1>
+
+        <p className="text-gray-600 mb-8 text-sm">
+          Save, manage and access your bookmarks securely from anywhere.
+        </p>
+
+        {/* Google Button */}
+        <button
+          onClick={handleLogin}
+          disabled={loading}
+          className="w-full flex items-center justify-center gap-3 border border-gray-300 p-3 rounded-md bg-white 
+  hover:shadow-md hover:-translate-y-0.5 
+  active:scale-95 
+  transition-all duration-200 ease-in-out"
+        >
+          {!loading ? (
+            <>
+              {/* Google Icon */}
+              <svg className="w-5 h-5" viewBox="0 0 48 48">
+                <path fill="#EA4335" d="M24 9.5c3.3 0 6.3 1.2 8.7 3.2l6.5-6.5C35.5 2.2 30.2 0 24 0 14.6 0 6.6 5.5 2.7 13.6l7.8 6C12.2 13.3 17.7 9.5 24 9.5z" />
+                <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.5 2.7-2 5-4.2 6.6l6.5 5c3.8-3.5 7.5-8.7 7.5-15.6z" />
+                <path fill="#FBBC05" d="M10.5 28.6c-.5-1.3-.8-2.7-.8-4.1s.3-2.8.8-4.1l-7.8-6C1 17.5 0 20.7 0 24.5s1 7 2.7 10.1l7.8-6z" />
+                <path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-6.5-5c-2 1.4-4.6 2.3-8.7 2.3-6.3 0-11.8-3.8-13.5-9.1l-7.8 6C6.6 42.5 14.6 48 24 48z" />
+              </svg>
+
+              <span className="text-gray-900 font-medium">
+                Continue with Google
+              </span>
+            </>
+          ) : (
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 border-2 border-gray-400 border-t-black rounded-full animate-spin"></div>
+              <span className="text-gray-700 text-sm">Redirecting...</span>
+            </div>
+          )}
+        </button>
+
+
+        {/* Footer */}
+        <p className="text-xs text-gray-500 mt-8">
+          Secure authentication powered by Google OAuth.
+        </p>
+      </div>
     </div>
   );
 }
